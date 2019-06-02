@@ -1,0 +1,104 @@
+CREATE SCHEMA `stackoverflow` ;
+CREATE TABLE `stackoverflow`.`user` (
+                                      `id` INT NOT NULL AUTO_INCREMENT,
+                                      `username` VARCHAR(45) NOT NULL,
+                                      `password` VARCHAR(45) NOT NULL,
+                                      PRIMARY KEY (`id`),
+                                      UNIQUE INDEX `username_UNIQUE` (`username` ASC));
+CREATE TABLE `stackoverflow`.`answer` (
+                                        `id` INT NOT NULL AUTO_INCREMENT,
+                                        `answer_id` INT NOT NULL,
+                                        `question_id` INT NOT NULL,
+                                        `text` VARCHAR(45) NULL,
+                                        `creation_date` VARCHAR(45) NULL,
+                                        PRIMARY KEY (`id`),
+                                        INDEX `useranswer_idx` (`author_id` ASC),
+                                        INDEX `questionanswer_idx` (`question_id` ASC),
+                                        CONSTRAINT `useranswer`
+                                          FOREIGN KEY (`author_id`)
+                                            REFERENCES `stackoverflow`.`user` (`id`)
+                                            ON DELETE NO ACTION
+                                            ON UPDATE NO ACTION,
+                                        CONSTRAINT `questionanswer`
+                                          FOREIGN KEY (`question_id`)
+                                            REFERENCES `stackoverflow`.`question` (`id`)
+                                            ON DELETE NO ACTION
+                                            ON UPDATE NO ACTION);
+
+CREATE TABLE `stackoverflow`.`question` (
+                                          `id` INT NOT NULL,
+                                          `author_id` INT NOT NULL,
+                                          `title` VARCHAR(45) NOT NULL,
+                                          `text` VARCHAR(45) NOT NULL,
+                                          `creation_date` VARCHAR(45) NOT NULL,
+                                          PRIMARY KEY (`id`),
+                                          INDEX `user_idx` (`author_id` ASC),
+                                          CONSTRAINT `user`
+                                            FOREIGN KEY (`author_id`)
+                                              REFERENCES `stackoverflow`.`user` (`id`)
+                                              ON DELETE NO ACTION
+                                              ON UPDATE NO ACTION);
+CREATE TABLE `stackoverflow`.`tag` (
+                                     `id` INT NOT NULL AUTO_INCREMENT,
+                                     `tag_name` VARCHAR(45) NOT NULL,
+                                     PRIMARY KEY (`id`));
+CREATE TABLE `stackoverflow`.`question_tag` (
+                                              `id` INT NOT NULL AUTO_INCREMENT,
+                                              `question_id` INT NOT NULL,
+                                              `tag_id` INT NOT NULL,
+                                              PRIMARY KEY (`id`),
+                                              INDEX `questionqt_idx` (`question_id` ASC),
+                                              INDEX `tagqt_idx` (`tag_id` ASC),
+                                              CONSTRAINT `questionqt`
+                                                FOREIGN KEY (`question_id`)
+                                                  REFERENCES `stackoverflow`.`question` (`id`)
+                                                  ON DELETE NO ACTION
+                                                  ON UPDATE NO ACTION,
+                                              CONSTRAINT `tagqt`
+                                                FOREIGN KEY (`tag_id`)
+                                                  REFERENCES `stackoverflow`.`tag` (`id`)
+                                                  ON DELETE NO ACTION
+                                                  ON UPDATE NO ACTION);
+
+CREATE TABLE `stackoverflow`.`vote_user_answer` (
+                                                  `id` INT NOT NULL AUTO_INCREMENT,
+                                                  `user_id` INT NOT NULL,
+                                                  `answer_id` INT NOT NULL,
+                                                  `vote_type` VARCHAR(45) NOT NULL,
+                                                  PRIMARY KEY (`id`),
+                                                  INDEX `uservote_idx` (`user_id` ASC),
+                                                  INDEX `answervote_idx` (`answer_id` ASC),
+                                                  CONSTRAINT `uservote`
+                                                    FOREIGN KEY (`user_id`)
+                                                      REFERENCES `stackoverflow`.`user` (`id`)
+                                                      ON DELETE NO ACTION
+                                                      ON UPDATE NO ACTION,
+                                                  CONSTRAINT `answervote`
+                                                    FOREIGN KEY (`answer_id`)
+                                                      REFERENCES `stackoverflow`.`answer` (`id`)
+                                                      ON DELETE NO ACTION
+                                                      ON UPDATE NO ACTION);
+CREATE TABLE `stackoverflow`.`vote_user_question` (
+                                                    `id` INT NOT NULL AUTO_INCREMENT,
+                                                    `user_id` INT NOT NULL,
+                                                    `question_id` INT NOT NULL,
+                                                    `vote_type` VARCHAR(45) NULL,
+                                                    PRIMARY KEY (`id`),
+                                                    INDEX `uservq_idx` (`user_id` ASC),
+                                                    INDEX `questionvq_idx` (`question_id` ASC),
+                                                    CONSTRAINT `uservq`
+                                                      FOREIGN KEY (`user_id`)
+                                                        REFERENCES `stackoverflow`.`user` (`id`)
+                                                        ON DELETE NO ACTION
+                                                        ON UPDATE NO ACTION,
+                                                    CONSTRAINT `questionvq`
+                                                      FOREIGN KEY (`question_id`)
+                                                        REFERENCES `stackoverflow`.`question` (`id`)
+                                                        ON DELETE NO ACTION
+                                                        ON UPDATE NO ACTION);
+ALTER TABLE `stackoverflow`.`user`
+  ADD COLUMN `is_banned` BIT NULL AFTER `password`,
+  ADD COLUMN `is_logged` BIT NULL AFTER `is_banned`,
+  ADD COLUMN `is_moderator` BIT NULL AFTER `is_logged`;
+ALTER TABLE `stackoverflow`.`question`
+  CHANGE COLUMN `id` `id` INT(11) NOT NULL AUTO_INCREMENT ;
