@@ -17,6 +17,7 @@ export default class SmartQuestionList extends Component{
         ))
         this.listener = modelState => this.setState(mapModelStateToComponentState(modelState));
         questionModel.addListener("change",this.listener);
+        questionListPresenter.onInitAllQuestions();
 
     }
 
@@ -34,6 +35,12 @@ export default class SmartQuestionList extends Component{
             onFilterTag = {questionListPresenter.onFilterTag}
             filterText = {this.state.filterText}
             onSearchBarChange = {questionListPresenter.onSearchBarChange}
+            onEditQuestion = {questionListPresenter.onEdit}
+            onDeleteQuestion = {questionListPresenter.onDelete}
+            onUpVote = {questionListPresenter.onUpVote}
+            onDownVote = {questionListPresenter.onDownVote}
+            onUndo = {questionListPresenter.onUndo}
+            onRedo = {questionListPresenter.onRedo}
             />
         )
     }

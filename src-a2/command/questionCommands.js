@@ -1,5 +1,4 @@
 import questionModel from "../model/questionModel";
-import model from "../model/model";
 
 class AddQuestionCommand {
     constructor(title, text, tags) {
@@ -21,19 +20,20 @@ class AddQuestionCommand {
 }
 
 class UpdateQuestionCommand {
-    constructor(questionId, newTitle, newText) {
+    constructor(questionId, newTitle, newText, newTags) {
         this.questionId = questionId;
         this.newTitle = newTitle;
         this.newText = newText;
-        this.lastQuestion = {...model.getQuestion(questionId)};
+        this.newTags = newTags;
+        this.lastQuestion = {...questionModel.getQuestion(questionId)};
     }
 
     execute() {
-        return questionModel.updateQuestion(this.questionId, this.newTitle, this.newText);
+        return questionModel.updateQuestion(this.questionId, this.newTitle, this.newText, this.newTags);
     }
 
     undo() {
-        return questionModel.updateQuestion(this.questionId, this.lastQuestion.title, this.lastQuestion.text);
+        return questionModel.updateQuestion(this.questionId, this.lastQuestion.title, this.lastQuestion.text, this.lastQuestion.tags);
     }
 }
 
@@ -41,7 +41,7 @@ class UpdateQuestionCommand {
 class DeleteQuestionCommand {
     constructor(questionId) {
         this.questionId = questionId;
-        this.deletedQuestion = {...model.getQuestion(questionId)};
+        this.deletedQuestion = {...questionModel.getQuestion(questionId)};
     }
 
     execute() {

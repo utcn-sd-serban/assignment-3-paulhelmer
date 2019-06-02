@@ -1,6 +1,10 @@
 import {EventEmitter} from "events";
 import WebSocketListener from "../ws/WebSocketListener";
 import RestClientFactory from "../rest/RestClientFactory";
+import answerModel from "../model/answerModel.js"
+import questionModel from "../model/questionModel.js"
+import userModel from "../model/userModel.js"
+
 
 const makeUser = (id, username, password, score, isModerator, isBanned) => ({
     id, username, password, score, isModerator, isBanned
@@ -53,183 +57,6 @@ class Model extends EventEmitter {
         };
     }
 
-    banUserToLocalState(bannedUserId) {
-        var user = this.state.users.find(u => u.id === bannedUserId);
-        if (user) user.isBanned = true;
-
-        if (this.state.currentUser.id === bannedUserId) this.isBanned = true;
-        this.emit("change", this.state);
-    }
-
-    listAnswersForQuestion(questionId) {
-        return this.state.answers.filter(a => a.questionId === questionId);
-    }
-
-    getAnswer(answerId) {
-        return this.state.answers.find(a => a.id === answerId);
-    }
-
-    sendVoteAnswerToLocalState(votedAnswer) {
-        var answer = this.getAnswer(votedAnswer.id);
-        answer.voteCount = votedAnswer.voteCount;
-
-        this.emit("change", this.state);
-    }
-
-    addAnswerToLocalState(answer) {
-        this.state = {
-            ...this.state,
-            answers: [{...answer}].concat(this.state.answers)
-        };
-
-        this.emit("change", this.state);
-    }
-
-    updateAnswerTextToLocalState(answerId, newText) {
-        var answer = this.getAnswer(answerId);
-        if (answer === undefined) {
-            return;
-        }
-
-        answer.text = newText;
-
-        this.emit("change", this.state);
-    }
-
-    deleteAnswerToLocalState(answerId) {
-        this.state = {
-            ...this.state,
-            answers: this.state.answers.filter(a => a.id !== answerId),
-        };
-
-        this.emit("change", this.state);
-    }
-
-    changeNewAnswerProperty(property, value) {
-        this.state = {
-            ...this.state,
-            newAnswer: {
-                ...this.state.newAnswer,
-                [property]: value
-            }
-        };
-        this.emit("change", this.state);
-    }
-
-    prepareAnswerForUpdate(answerId) {
-        var answer = this.getAnswer(answerId);
-        this.state.updateAnswer.text = answer.text;
-
-        this.emit("change", this.state);
-    }
-
-    changeUpdateAnswerProperty(property, value) {
-        this.state = {
-            ...this.state,
-            updateAnswer: {
-                ...this.state.updateAnswer,
-                [property]: value
-            }
-        };
-        this.emit("change", this.state);
-    }
-
-    filterQuestionByTagCommaSeparatedInLocalState(tagText) {
-        var tags = tagText.trim().split(',');
-        return this.filterQuestionsByTagInLocalState(tags);
-    }
-
-    filterQuestionsByTagInLocalState(tags) {
-        return this.state.questions.filter(q => tags.every(t => q.tags.includes(t)));
-    }
-
-    filterQuestionsByTitleInLocalState(title) {
-        return this.state.questions.filter(q => q.title.includes(title));
-    }
-
-    getQuestion(id) {
-        var res = this.state.questions.find(q => q.id === id);
-        return res;
-    }
-
-    addQuestionToLocalState(question) {
-        this.state = {
-            ...this.state,
-            questions: [question].concat(this.state.questions)
-        };
-
-        this.emit("change", this.state);
-    }
-
-    updateQuestionToLocalState(questionId, newTitle, newText) {
-        var question = this.getQuestion(questionId);
-        if (question === undefined) {
-            return;
-        }
-
-        question.title = newTitle;
-        question.text = newText;
-
-        this.emit("change", this.state);
-    }
-
-    prepareQuestionForUpdate(questionId) {
-        var question = this.getQuestion(questionId);
-        this.state.updateQuestion.title = question.title;
-        this.state.updateQuestion.text = question.text;
-
-        this.emit("change", this.state);
-    }
-
-    deleteQuestionToLocalState(questionId) {
-        this.state = {
-            ...this.state,
-            questions: this.state.questions.filter(q => q.id !== questionId),
-        };
-        this.emit("change", this.state);
-    }
-
-    sendVoteQuestionToLocalState(votedQuestion) {
-        var question = this.getQuestion(votedQuestion.id);
-        question.voteCount = votedQuestion.voteCount;
-
-        this.emit("change", this.state);
-    }
-
-    changeNewQuestionProperty(property, value) {
-        this.state = {
-            ...this.state,
-            newQuestion: {
-                ...this.state.newQuestion,
-                [property]: value
-            }
-        };
-        this.emit("change", this.state);
-    }
-
-    changeUpdateQuestionProperty(property, value) {
-        this.state = {
-            ...this.state,
-            updateQuestion: {
-                ...this.state.updateQuestion,
-                [property]: value
-            }
-        };
-        this.emit("change", this.state);
-    }
-
-    changeModelProperty(property, value) {
-        this.state = {
-            ...this.state,
-            [property]: value
-        };
-        this.emit("change", this.state);
-    }
-
-    makeTagsList() {
-        var allTags = this.state.tags.concat.apply([], this.state.questions.map(q => q.tags));
-        return Array.from(new Set(allTags)).sort();
-    }
 
     makeLogin(username, password) {
         this.client = new RestClientFactory(username, password);
@@ -298,35 +125,34 @@ function webSocketListener(event) {
     {
         switch (event.type) {
             case "ANSWER_CREATED":
-                model.addAnswerToLocalState(event.answerDTO);
+                answerModel.addAnswerToLocalState(event.answerDTO);
                 break;
             case "ANSWER_DELETED":
-                model.deleteAnswerToLocalState(event.answerId);
+                answerModel.deleteAnswerToLocalState(event.answerId);
                 break;
             case "ANSWER_UPDATED":
-                model.updateAnswerTextToLocalState(event.answerDTO.id, event.answerDTO.text);
+                answerModel.updateAnswerTextToLocalState(event.answerDTO.id, event.answerDTO.text);
                 break;
             case "QUESTION_CREATED":
-                model.addQuestionToLocalState(event.questionDTO);
+                questionModel.addQuestionToLocalState(event.questionDTO);
                 break;
             case "QUESTION_DELETED":
-                model.deleteQuestionToLocalState(event.questionId);
+                questionModel.deleteQuestionToLocalState(event.questionId);
                 break;
             case "QUESTION_UPDATED":
-                model.updateQuestionToLocalState(event.questionDTO.id, event.questionDTO.title, event.questionDTO.text);
+                questionModel.updateQuestionToLocalState(event.questionDTO.id, event.questionDTO.title, event.questionDTO.text);
                 break;
             case "USER_UPDATED":
-                model.updateUserInfo(event.userDTO);
+                userModel.updateUserInfo(event.userDTO);
                 break;
             case "VOTED_ANSWER":
-                model.sendVoteAnswerToLocalState(event.answerDTO);
+                answerModel.sendVoteAnswerToLocalState(event.answerDTO);
                 break;
             case "VOTED_QUESTION":
-                model.sendVoteQuestionToLocalState(event.questionDTO);
+                questionModel.sendVoteQuestionToLocalState(event.questionDTO);
                 break;
-
             case "USER_BANNED":
-                model.banUserToLocalState(event.userId);
+                userModel.banUserToLocalState(event.userId);
                 break;
         }
     }

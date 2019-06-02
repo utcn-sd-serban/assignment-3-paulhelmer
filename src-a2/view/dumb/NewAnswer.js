@@ -1,7 +1,7 @@
 import React from 'react';
 
-const NewQuestion = ({
-                    newQuestion, onCreate, onChange, onUndo, onRedo
+const NewAnswer = ({
+                    newAnswer, onCreate, onChange, onUndo, onRedo
                 }) => (
                     <div className="hero is-success is-fullheight">
   <div class="hero-head">
@@ -20,16 +20,13 @@ const NewQuestion = ({
   <div class="hero-body">
     <div class="container has-text-centered">
       <h1 class="title">
-        Ask a question!
+        Add an answer!
       </h1>
       <h2 class="subtitle">
         Fill in the information bellow.
       </h2>
      <div class = "field">
-          <input class = "input is-warning is-rounded" type = "text" value = {newQuestion.title}onChange = {e=>onChange("title", e.target.value)}  placeholder = "Title"/>
-          <input class = "input is-warning is-rounded" type = "text" onChange = {e=>onChange("text", e.target.value)} value = {newQuestion.text} placeholder = "Text"/>
-          <input class = "input is-warning is-rounded" type = "text" onChange = {e=>onChange("tags", e.target.value)} value = {newQuestion.tags} placeholder = "Tags"/>
-
+          <input class = "input is-warning is-rounded" type = "text" onChange = {e=>onChange("text", e.target.value)} value = {newAnswer.text} placeholder = "Text"/>
      </div>
      <a class="button is-warning is-rounded is-hovered is-medium" onClick = {onCreate}>Create</a>   
     </div>
@@ -37,4 +34,4 @@ const NewQuestion = ({
   
 </div>);
 
-export default NewQuestion;
+export default NewAnswer;

@@ -5,14 +5,6 @@ const LoginRegister = ({
                 }) => (
                     <div className="hero is-success is-fullheight">
   <div class="hero-head">
-    <nav class="tabs is-boxed">
-      <div class="container">
-        <ul>
-          <li class="is-active"><a>Home</a></li>
-          <li><a>Questions</a></li>
-        </ul>
-      </div>
-    </nav>
   </div>
 
   <div class="hero-body">

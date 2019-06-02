@@ -3,15 +3,19 @@ import QuestionDetails from "./QuestionDetails"
 
 const QuestionList = ({
                     questions, onViewAnswers, onNewQuestion, filterMode,
-                    onFilterTitle, onFilterTag, onSearchBarChange, filterText
+                    onFilterTitle, onFilterTag, onSearchBarChange, filterText,
+                    onEditQuestion, onDeleteQuestion, onUpVote, onDownVote,
+                    onUndo, onRedo
                 }) => (
                     <div className="hero is-info is-fullheight">
   <div class="hero-head">
     <nav class="tabs is-boxed">
       <div class="container">
         <ul>
-          <li class="is-active"><a>Home</a></li>
+          <li class="is-active"><a>Login</a></li>
           <li><a>Questions</a></li>
+          <li onClick = {onUndo}><a>Undo</a></li>
+          <li onClick = {onRedo}><a>Redo</a></li>
         </ul>
       </div>
     </nav>
@@ -32,10 +36,16 @@ const QuestionList = ({
     <div class="container has-text-centered">
     {
         questions.map((question) => (
+            <div>
             <QuestionDetails
                 question = {question}
                 onViewAnswers = {onViewAnswers}
+                onEditQuestion = {onEditQuestion}
+                onDeleteQuestion = {onDeleteQuestion}
+                onUpVote = {onUpVote}
+                onDownVote = {onDownVote}
             />
+            </div>
         ))
     }
     </div>

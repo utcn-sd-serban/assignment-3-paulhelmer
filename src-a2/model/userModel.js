@@ -20,6 +20,7 @@ class User extends EventEmitter{
         };
     }
 
+
     banUserToLocalState(bannedUserId) {
         var user = this.state.users.find(u => u.id === bannedUserId);
         if (user) user.isBanned = true;

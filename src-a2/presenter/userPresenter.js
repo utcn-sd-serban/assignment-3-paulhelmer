@@ -1,9 +1,10 @@
 import userModel from "../model/userModel";
+import model from "../model/model";
 
 class UserPresenter {
     onLogin = () => {
         let newUser = userModel.state.newUser;
-        let loginSuccess = userModel.login(newUser.username, newUser.password);
+        let loginSuccess = model.makeLogin(newUser.username, newUser.password);
 
         userModel.changeNewUserProperty("username", "");
         userModel.changeNewUserProperty("password", "");

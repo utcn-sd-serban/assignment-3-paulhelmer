@@ -1,15 +1,15 @@
 import React, {Component} from "react"
-import NewQuestion from "../dumb/NewQuestion"
+import EditQuestion from "../dumb/EditQuestion"
 import questionModel from "../../model/questionModel"
-import newQuestionPresenter from "../../presenter/newQuestionPresenter"
+import editQuestionPresenter from "../../presenter/editQuestionPresenter"
 
 const mapModelStateToComponentState = (modelState) => ({
     questions:modelState.questions,
-    newQuestion:modelState.newQuestion
+    updateQuestion:modelState.updateQuestion
 });
 
 
-export default class SmartNewQuestion extends Component{
+export default class SmartEditQuestion extends Component{
     constructor(){
         super();
         this.state = mapModelStateToComponentState(questionModel.state);
@@ -23,12 +23,12 @@ export default class SmartNewQuestion extends Component{
 
     render() {
         return (
-            <NewQuestion
-                onCreate = {newQuestionPresenter.onCreate}
-                onChange = {newQuestionPresenter.onChange}
-                newQuestion = {this.state.newQuestion}
-                onUndo = {newQuestionPresenter.onUndo}
-                onRedo = {newQuestionPresenter.onRedo}
+            <EditQuestion
+                onUpdate = {editQuestionPresenter.onUpdate}
+                onChange = {editQuestionPresenter.onChange}
+                updateQuestion = {this.state.updateQuestion}
+                onUndo = {editQuestionPresenter.onUndo}
+            onRedo = {editQuestionPresenter.onRedo}
             />
         );
     }

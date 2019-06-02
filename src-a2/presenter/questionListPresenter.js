@@ -1,6 +1,5 @@
 import questionModel from "../model/questionModel.js"
-import model from "../model/userModel.js";
-//import answerModel from "../model/answerModel.js"
+import answerModel from "../model/answerModel.js"
 
 import {
     AddQuestionCommand,
@@ -16,13 +15,11 @@ class QuestionListPresenter {
     }
 
     onFilterTitle() {
-        questionModel.changeStateProperty("filterMode", "title");
         questionModel.loadFilteredByTitle(questionModel.state.filterText);
         window.location.assign("#/filtered-questions");
     }
 
     onFilterTag() {
-        questionModel.changeStateProperty("filterMode", "tag");
         questionModel.loadFilteredByTags(questionModel.state.filterText);        
         window.location.assign("#/filtered-questions");
     }
@@ -31,7 +28,6 @@ class QuestionListPresenter {
         questionModel.changeNewQuestionProperty(property,value);
     }
     onCreate(){
-        //questionModel.addQuestion(questionModel.state.newQuestion.title,questionModel.state.newQuestion.text,model.state.currentUser.userName, questionModel.state.newQuestion.tags);
         var question = questionModel.state.newQuestion;
         var tags = question.tags.trim().split(',');
         invoker.invoke(new AddQuestionCommand(question.title, question.text, tags))
@@ -47,20 +43,16 @@ class QuestionListPresenter {
     }
 
     onViewAnswers(questionId) {
-        /*answerModel.loadAnswersForQuestion(qustionId).then(
+        answerModel.state.newAnswer.questionId=questionId;
+        answerModel.loadAnswersForQuestion(questionId).then(
             ()=>window.location.assign("#/answers/"+questionId)
-        );*/
+        );
     }
 
-    onUpdate(questionId) {
-        invoker.invoke(new UpdateQuestionCommand(questionId, questionModel.state.updateQuestion.title, model.questionState.updateQuestion.text));
-        questionModel.changeUpdateQuestionProperty("title", "");
-        questionModel.changeUpdateQuestionProperty("text", "");
-        window.location.assign("#/questions");
-    }
+    
 
     onDelete(questionId) {
-        window.location.assign('#/questions/')
+        window.location.assign('#/questions/');
         invoker.invoke(new DeleteQuestionCommand(questionId));
     }
 
@@ -69,27 +61,23 @@ class QuestionListPresenter {
         window.location.assign("#/edit-question/" + questionId);
     }
 
-    onVote(questionId, vote) {
-        invoker.invoke(new VoteQuestionCommand(questionId, vote));
+    onUpVote(questionId) {
+        invoker.invoke(new VoteQuestionCommand(questionId, +1));
+    }
+    onDownVote(questionId) {
+        invoker.invoke(new VoteQuestionCommand(questionId, -1));
     }
 
     onInitAllQuestions() {
         questionModel.loadAllQuestions();
     }
 
-    onInitFilterByTitle(title) {
-        questionModel.loadFilteredByTitle(title);
+    onUndo(){
+        invoker.undo();
     }
-
-    onInitFilterByTags(tags) {
-        questionModel.loadFilteredByTags(tags);
+    onRedo(){
+        invoker.redo();
     }
-
-    onInitDetails(questionId) {
-        //answerModel.loadAnswersForQuestion(questionId);
-    }
-
-
 }
 
 const questionListPresenter = new QuestionListPresenter();

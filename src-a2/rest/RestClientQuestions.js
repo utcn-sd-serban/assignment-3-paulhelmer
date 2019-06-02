@@ -20,9 +20,9 @@ export default class RestClientQuestions {
         return fetch(this.BASE_URL + "/questions", {
             method: "POST",
             body: JSON.stringify({
-                title,
-                text,
-                tags
+                title:title,
+                text:text,
+                tags:tags
             }),
             headers: {
                 "Authorization": this.authorization,
@@ -31,13 +31,14 @@ export default class RestClientQuestions {
         }).then(response => response.json());
     }
 
-    updateQuestion(questionId, newTitle, newText) {
+    updateQuestion(questionId, newTitle, newText, newTags) {
         return fetch(this.BASE_URL + "/questions/" + questionId, {
             method: "PUT",
             body: JSON.stringify({
                 id: questionId,
                 title: newTitle,
-                text: newText
+                text: newText,
+                tags: newTags
             }),
             headers: {
                 "Authorization": this.authorization,

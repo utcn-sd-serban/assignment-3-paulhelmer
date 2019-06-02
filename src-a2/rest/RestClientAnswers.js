@@ -44,8 +44,8 @@ export default class RestClientAnswers {
         }).then(response => response.json());
     }
 
-    deleteAnswer(answerId) {
-        return fetch(this.BASE_URL + "/questions/" + 0 + "/answers/" + answerId, {
+    deleteAnswer(answerId, questionId) {
+        return fetch(this.BASE_URL + "/questions/" + questionId + "/answers/" + answerId, {
             method: "DELETE",
             headers: {
                 "Authorization": this.authorization,
