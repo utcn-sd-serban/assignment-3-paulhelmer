@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,17 +31,17 @@ public class Seeder implements CommandLineRunner {
     private final UserManagementService userManagementService;
     private final QuestionManagementService questionManagementService;
     private final AnswerManagementService answerManagementService;
-    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
         UserRepository userRepository = factory.createUserRepository();
-        if(userRepository.findAll().size() <= 4) {
-            userRepository.save(new User( "u5",passwordEncoder.encode("pass")));
-            userRepository.save(new User( "u6",passwordEncoder.encode("pass")));
-            userRepository.save(new User( "u7",passwordEncoder.encode("pass")));
-            userRepository.save(new User( "u8",passwordEncoder.encode("pass")));
+        if(userRepository.findAll().isEmpty()) {
+            userRepository.save(new User( "u1","pass"));
+            userRepository.save(new User( "u2","pass"));
+            userRepository.save(new User( "u3","pass"));
+            userRepository.save(new User( "u4","pass"));
         }
         QuestionRepository questionRepository = factory.createQuestionRepository();
         User user = userRepository.findAll().get(0);

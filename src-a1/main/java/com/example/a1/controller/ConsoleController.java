@@ -11,7 +11,6 @@ import jdk.nashorn.internal.objects.Global;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -29,7 +28,6 @@ public class ConsoleController implements CommandLineRunner {
     private final QuestionManagementService questionManagementService;
     private final UserManagementService userManagementService;
     private final VoteManagementService voteManagementService;
-    private final PasswordEncoder passwordEncoder;
     private User user;
 
     @Override
@@ -39,7 +37,7 @@ public class ConsoleController implements CommandLineRunner {
         processCommands();
     }
 
-    private void loginUser() {
+    private void loginUser() { 
         System.out.print("Welcome! Please login\n");
         boolean done = false;
         while(!done) {
@@ -49,7 +47,7 @@ public class ConsoleController implements CommandLineRunner {
             System.out.print("Password: ");
             String password = scanner.nextLine().trim();
 
-            user =  userManagementService.login(username, password, passwordEncoder);
+            user =  userManagementService.login(username, password);
             if(user.isBanned()){
                 System.out.print("\nYou are banned!\n");
                 return;

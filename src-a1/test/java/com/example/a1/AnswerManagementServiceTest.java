@@ -22,8 +22,8 @@ public class AnswerManagementServiceTest {
         return factory;
     }
 
-    //@Test
-    /*public void testDeleteWorkWithExistingID(){
+    @Test
+    public void testDeleteWorkWithExistingID(){
         RepositoryFactory factory = createMokedFactory();
         AnswerManagementService answerManagementService = new AnswerManagementService(factory);
 
@@ -47,7 +47,7 @@ public class AnswerManagementServiceTest {
         AnswerManagementService answerManagementService = new AnswerManagementService(factory);
 
         answerManagementService.deleteAnswer(5, 2);
-    }*/
+    }
 
 
 
